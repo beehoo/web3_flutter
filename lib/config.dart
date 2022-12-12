@@ -1,2 +1,2 @@
 // 接口地址
-const String baseUrl = '';
+const String baseUrl = 'https://news.luckybgm.com';

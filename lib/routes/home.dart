@@ -18,41 +18,39 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      child: Column(
-        children: <Widget>[
-          // 搜索框
-          const SearchBar(),
-          // 内容区
-          SizedBox(
-            height: MediaQuery.of(context).size.height - 112,
-            child: FutureBuilder(
-              future: getNews({ 'begin': 0, 'num': 5 }),
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if (snapshot.hasData) {
-                  dynamic list = snapshot.data['dataList'];
-                  return ListView(
-                    padding: const EdgeInsets.all(10),
-                    children: <Widget>[
-                      for (var i = 0; i < list.length; i++)
-                        NewBox(news: list[i])
-                    ]
-                  );
-                } else {
-                  return const Center(
-                    child: Text(
-                      '加载中...',
-                      style: TextStyle(
-                        color: Color(0xFF999999)
-                      )
+    return Column(
+      children: <Widget>[
+        // 搜索框
+        const SearchBar(),
+        // 内容区
+        SizedBox(
+          height: MediaQuery.of(context).size.height - 112,
+          child: FutureBuilder(
+            future: getNews({ 'begin': 0, 'num': 5 }),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData) {
+                dynamic list = snapshot.data['dataList'];
+                return ListView(
+                  padding: const EdgeInsets.all(10),
+                  children: <Widget>[
+                    for (var i = 0; i < list.length; i++)
+                      NewBox(news: list[i])
+                  ]
+                );
+              } else {
+                return const Center(
+                  child: Text(
+                    '加载中...',
+                    style: TextStyle(
+                      color: Color(0xFF999999)
                     )
-                  );
-                }
-              },
-            )
+                  )
+                );
+              }
+            },
           )
-        ]
-      )
+        )
+      ]
     );
   }
 }

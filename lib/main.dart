@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import './iconfont/icon_font.dart';
 import 'routes/home.dart';
+import 'routes/my.dart';
 
 void main() {
   runApp(const MyApp());
@@ -42,7 +43,11 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: Align(
         alignment: Alignment.topCenter,
-        child: _selectedIndex == 0 ? const Home() : Text('Selected Index: $_selectedIndex')
+        child: _selectedIndex == 0
+          ? const Home()
+          : _selectedIndex == 2
+            ? const My()
+            : Text('Selected Index: $_selectedIndex')
       ),
       bottomNavigationBar: SizedBox(
         height: 56,

@@ -46,6 +46,9 @@ dependencies:
   # flutter_html
   flutter_html: ^2.2.1
 
+  # 提示框
+  another_flushbar: ^1.12.29
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -98,3 +101,9 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+  # 字体
+  fonts: 
+    - family: youshebiaotihei
+      fonts:
+        - asset: assets/fonts/youshebiaotihei.ttf
