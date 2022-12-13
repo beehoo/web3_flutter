@@ -1,9 +1,21 @@
 import 'package:flutter/material.dart';
 import './login.dart';
 import '../iconfont/icon_font.dart';
+import './about.dart';
 
+// 个人中心
 class My extends StatelessWidget {
   const My({super.key});
+
+  // 路由，route为路由对象，valid为校验是否已登录
+  _handleRoute (context, route, valid) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => valid ? const Login() : route,
+      )
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,14 +78,41 @@ class My extends StatelessWidget {
                 fontSize: 15,
                 fontWeight: FontWeight.w500,
                 color: primaryColor,
-              )
+              ),
+              onTap: () {}
             ),
-            const MenuItem(icon: IconNames.diamond, label: '积分计划'),
-            const MenuItem(icon: IconNames.tags, label: '我的标签'),
-            const MenuItem(icon: IconNames.setting, label: '账号设置'),
-            const MenuItem(icon: IconNames.share, label: '推荐分享'),
-            const MenuItem(icon: IconNames.xiaoxi, label: '消息中心'),
-            const MenuItem(icon: IconNames.guanyu, label: '关于Web3夜报'),
+            MenuItem(
+              icon: IconNames.diamond,
+              label: '积分计划',
+              onTap: () {}
+            ),
+            MenuItem(
+              icon: IconNames.tags,
+              label: '我的标签',
+              onTap: () {}
+            ),
+            MenuItem(
+              icon: IconNames.setting,
+              label: '账号设置',
+              onTap: () {}
+            ),
+            MenuItem(
+              icon: IconNames.share,
+              label: '推荐分享',
+              onTap: () {}
+            ),
+            MenuItem(
+              icon: IconNames.xiaoxi,
+              label: '消息中心',
+              onTap: () {}
+            ),
+            MenuItem(
+              icon: IconNames.guanyu,
+              label: '关于Web3夜报',
+              onTap: () {
+                _handleRoute(context, const About(), false);
+              }
+            ),
           ]
         )
       ]
@@ -128,17 +167,20 @@ class MenuItem extends StatelessWidget {
     super.key,
     required this.icon, // 图标
     required this.label, // 标题
-    this.textStyle = const TextStyle()}); // 文本样式
+    this.textStyle = const TextStyle(), // 文本样式
+    required this.onTap
+  });
   final dynamic icon;
   final String label;
   final dynamic textStyle;
+  final Function() onTap;
 
   @override
   Widget build(BuildContext context) {
     final primaryColor = '#${Theme.of(context).primaryColor.value.toRadixString(16)}';
 
     return InkWell(
-      onTap: () {},
+      onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.all(10),
         child: Row(

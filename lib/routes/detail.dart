@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import '../iconfont/icon_font.dart';
 import '../config.dart';
 
+// 文章详情
 class Detail extends StatefulWidget {
   const Detail({super.key, required this.id});
   final int id;

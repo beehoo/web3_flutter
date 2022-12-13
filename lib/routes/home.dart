@@ -3,21 +3,22 @@ import 'package:dio/dio.dart';
 import './detail.dart';
 import '../config.dart';
 
-// 查询新闻数据
-Future<void> getNews(params) async {
-  var dio = Dio();
-  Response response = await dio.post(
-    '$baseUrl/showEssay',
-    data: params,
-  );
-  return response.data;
-}
-
+// 主页
 class Home extends StatelessWidget {
   const Home({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // 查询新闻数据
+    Future<void> getNews(params) async {
+      var dio = Dio();
+      Response response = await dio.post(
+        '$baseUrl/showEssay',
+        data: params,
+      );
+      return response.data;
+    }
+
     return Column(
       children: <Widget>[
         // 搜索框

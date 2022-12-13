@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:another_flushbar/flushbar.dart';
 import '../iconfont/icon_font.dart';
+import '../common/utils.dart' show checkPhone;
 
+// 登录
 class Login extends StatefulWidget {
   const Login({super.key});
 
@@ -14,6 +17,30 @@ class _LoginState extends State<Login> {
   String password = ''; // 密码
   String code = ''; // 邀请码
   bool isPassword = true; // 是否为密码登录，否则为验证码登录
+  bool? isChecked = false; // 协议是否勾选
+
+  late TapGestureRecognizer _tapServer;
+  late TapGestureRecognizer _tapPolicy;
+
+  @override
+  void initState() {
+    super.initState();
+    _tapServer = TapGestureRecognizer()..onTap = () {
+      print('用户服务协议');
+    };
+
+    _tapPolicy = TapGestureRecognizer()..onTap = () {
+      print('隐私政策');
+    };
+  }
+
+  @override
+  void dispose() {
+    // 销毁对象 
+    _tapServer.dispose(); 
+    _tapPolicy.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,45 +48,29 @@ class _LoginState extends State<Login> {
 
     // 登录
     Future<void> loginSubmit() async {
+      String errorMsg = '';
+
       if (phone == '') {
-        Flushbar(
-          // title: '提示',
-          message: '请输入手机号',
-          duration: const Duration(seconds: 2),
-          flushbarPosition: FlushbarPosition.TOP,
-          icon: IconFont(IconNames.del, color: '#f00')
-        ).show(context);
-        return;
+        errorMsg = '请输入手机号';
       }
       if (isPassword && password == '') {
-        Flushbar(
-          // title: '提示',
-          message: '请输入密码',
-          duration: const Duration(seconds: 2),
-          flushbarPosition: FlushbarPosition.TOP,
-          icon: IconFont(IconNames.del, color: '#f00')
-        ).show(context);
-        return;
+        errorMsg = '请输入密码';
       }
       if (!isPassword && code == '') {
-        Flushbar(
-          // title: '提示',
-          message: '请输入验证码',
-          duration: const Duration(seconds: 2),
-          flushbarPosition: FlushbarPosition.TOP,
-          icon: IconFont(IconNames.del, color: '#f00')
-        ).show(context);
-        return;
+        errorMsg = '请输入验证码';
+      }
+      if (isChecked == false) {
+        errorMsg = '请阅读并勾选协议';
+      }
+      // 验证手机号格式
+      if (!checkPhone(phone)) {
+        errorMsg = '请输入正确的手机号';
       }
 
-      // 验证手机号格式
-      var pattern = r'1\d{10}';
-      var regex = RegExp(pattern);
-      var match = regex.firstMatch(phone);
-      if (match == null) {
+      if (errorMsg != '') {
         Flushbar(
           // title: '提示',
-          message: '请输入正确的手机号',
+          message: errorMsg,
           duration: const Duration(seconds: 2),
           flushbarPosition: FlushbarPosition.TOP,
           icon: IconFont(IconNames.del, color: '#f00')
@@ -135,6 +146,69 @@ class _LoginState extends State<Login> {
                     code = value;
                   }
                 ),
+                // 忘记密码
+                SizedBox(
+                  height: 40,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      Visibility(
+                        visible: isPassword,
+                        child: TextButton(
+                          onPressed: () {},
+                          child: const Text(
+                            '忘记密码',
+                            style: TextStyle(
+                              color: Color(0xFF999999)
+                            )
+                          )
+                        )
+                      )
+                    ],
+                  )
+                ),
+                // 勾选协议
+                DefaultTextStyle(
+                  style: const TextStyle(
+                    color: Color(0xFF999999),
+                    fontSize: 12
+                  ),
+                  child: Row(
+                    children: <Widget>[
+                      Checkbox(
+                        value: isChecked,
+                        onChanged: (value) {
+                          setState(() {
+                            isChecked = value;
+                          });
+                        }
+                      ),
+                      Expanded(
+                        child: Text.rich(TextSpan(
+                          children: [
+                            const TextSpan(text: '我已阅读并同意《'),
+                            TextSpan(
+                              text: '用户服务协议',
+                              style: const TextStyle(
+                                color: Colors.blue
+                              ),
+                              recognizer: _tapServer
+                            ),
+                            const TextSpan(text: '》和《'),
+                            TextSpan(
+                              text: '隐私政策',
+                              style: const TextStyle(
+                                color: Colors.blue
+                              ),
+                              recognizer: _tapPolicy
+                            ),
+                            const TextSpan(text: '》')
+                          ]
+                        ))
+                      )
+                    ]
+                  ),
+                ),
                 const SizedBox(height: 20),
                 // 登录按钮
                 ClipRRect(
@@ -184,9 +258,9 @@ class _LoginState extends State<Login> {
 class LoginInput extends StatelessWidget {
   const LoginInput({
     super.key,
-    required this.hintText,
-    required this.onChanged,
-    this.obscureText = false
+    required this.hintText, // 占位文字
+    required this.onChanged, // 修改事件
+    this.obscureText = false // 输入内容是否可见
   });
   final String hintText;
   final dynamic onChanged;
