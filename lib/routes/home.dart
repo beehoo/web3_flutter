@@ -12,9 +12,9 @@ class Home extends StatelessWidget {
     // 查询新闻数据
     Future<void> getNews(params) async {
       var dio = Dio();
-      Response response = await dio.post(
-        '$baseUrl/showEssay',
-        data: params,
+      Response response = await dio.get(
+        '$baseUrl/queryArticles',
+        queryParameters: params,
       );
       return response.data;
     }
@@ -27,10 +27,10 @@ class Home extends StatelessWidget {
         SizedBox(
           height: MediaQuery.of(context).size.height - 112,
           child: FutureBuilder(
-            future: getNews({ 'begin': 0, 'num': 5 }),
+            future: getNews({ 'page': 1, 'limit': 5 }),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (snapshot.hasData) {
-                dynamic list = snapshot.data['dataList'];
+                dynamic list = snapshot.data['data'];
                 return ListView(
                   padding: const EdgeInsets.all(10),
                   children: <Widget>[
@@ -139,7 +139,7 @@ class NewBox extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => Detail(id: news['id']),
+            builder: (context) => Detail(id: news['_id']),
           )
         );
       },
@@ -158,11 +158,13 @@ class NewBox extends StatelessWidget {
             // 内容图片
             ClipRRect(
               borderRadius: BorderRadius.circular(5),
-              child: Image.network(
-                news['pic'],
-                width: double.infinity,
-                height: 160,
-                fit: BoxFit.cover
+              // 图片显示比例16:9
+              child: AspectRatio(
+                aspectRatio: 16/9,
+                child: Image.network(
+                  news['cover'],
+                  fit: BoxFit.cover
+                )
               ),
             ),
             const SizedBox(height: 10), // 间距
@@ -176,7 +178,7 @@ class NewBox extends StatelessWidget {
             ),
             const SizedBox(height: 5), // 间距
             // 内容简介
-            Text(news['desct'],
+            Text(news['intro'],
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
@@ -195,12 +197,12 @@ class NewBox extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Text(news['ownName'] ?? '好消息'),
+                      Text(news['author'] ?? '好消息'),
                       const SizedBox(width: 20),
                       Text(news['createTime'])
                     ]
                   ),
-                  Text('${news["essayRNum[1]"] ?? 0}点赞')
+                  const Text('0点赞')
                 ]
               )
             ),

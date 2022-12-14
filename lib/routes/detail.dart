@@ -7,7 +7,7 @@ import '../config.dart';
 // 文章详情
 class Detail extends StatefulWidget {
   const Detail({super.key, required this.id});
-  final int id;
+  final String id;
 
   @override
   State<Detail> createState() => _DetailState();
@@ -25,12 +25,12 @@ class _DetailState extends State<Detail> {
   // 查询新闻详情
   Future<void> getDetail(params) async {
     var dio = Dio();
-    Response response = await dio.post(
-      '$baseUrl/showEssay',
-      data: params,
+    Response response = await dio.get(
+      '$baseUrl/queryArticles',
+      queryParameters: params,
     );
     setState(() {
-      _data = response.data['dataList'][0];
+      _data = response.data['data'][0];
     });
   }
 
@@ -76,7 +76,7 @@ class _DetailState extends State<Detail> {
                   ),
                   child: Row(
                     children: <Widget>[
-                      Text(_data['ownName'] ?? '好消息'),
+                      Text(_data['author'] ?? '好消息'),
                       const SizedBox(width: 20),
                       Text(_data['createTime'])
                     ]
@@ -97,7 +97,7 @@ class _DetailState extends State<Detail> {
                       const SizedBox(width: 10),
                       Expanded( // 不加的话Text无法自动换行
                         child: Text(
-                          _data['desct'],
+                          _data['intro'],
                           style: const TextStyle(
                             color: Color(0xFF999999),
                             fontSize: 12
@@ -109,7 +109,7 @@ class _DetailState extends State<Detail> {
                 ),
                 const SizedBox(height: 10),
                 Html(
-                  data: _data['con'],
+                  data: _data['cont'],
                   style: {
                     'div': Style(
                       margin: const EdgeInsets.only(bottom: 10),
